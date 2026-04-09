@@ -3791,55 +3791,60 @@
   // ============================================
 // DOWNLOAD RESUME FUNCTION (with error handling)
 // ============================================
+// ============================================
+// DOWNLOAD RESUME FUNCTION
+// ============================================
 function downloadResume() {
-    const resumeUrl = 'assets/resume/lochana-bandara-resume.pdf';
+    // Path to the resume file
+    const resumePath = 'assets/resume/Lochana_Bandara_Resume.pdf';
     
-    // Show loading state
-    const downloadBtn = document.querySelector('.btn-resume, .btn-outline:has(.fa-download)');
-    if (downloadBtn) {
-        const originalText = downloadBtn.innerHTML;
-        downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-        downloadBtn.disabled = true;
-        
-        // Check if file exists before downloading
-        fetch(resumeUrl, { method: 'HEAD' })
-            .then(response => {
-                if (response.ok) {
-                    // File exists, proceed with download
-                    const link = document.createElement('a');
-                    link.href = resumeUrl;
-                    link.download = 'Lochana_Bandara_Resume.pdf';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    
-                    // Show success message
-                    showToast('✅ Resume downloaded successfully!');
-                } else {
-                    // File doesn't exist
-                    showToast('❌ Resume file not found. Please contact admin.', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Download error:', error);
-                showToast('❌ Unable to download resume. Please try again later.', 'error');
-            })
-            .finally(() => {
-                // Reset button
-                setTimeout(() => {
-                    downloadBtn.innerHTML = originalText;
-                    downloadBtn.disabled = false;
-                }, 1000);
-            });
-    } else {
-        // Simple download without loading state
-        const link = document.createElement('a');
-        link.href = resumeUrl;
-        link.download = 'Lochana_Bandara_Resume.pdf';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
+    // Create a temporary anchor element
+    const link = document.createElement('a');
+    link.href = resumePath;
+    link.download = 'Lochana_Bandara_Resume.pdf';
+    
+    // Trigger download
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Show success message (optional)
+    showToast('📄 Downloading resume...');
+}
+
+// Toast notification function (add if not exists)
+function showToast(message) {
+    let toast = document.createElement('div');
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #0066FF, #00D4FF);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        z-index: 10000;
+        animation: fadeInOut 2s ease;
+        font-weight: 500;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+}
+
+// Add animation style if not exists
+if (!document.querySelector('#toast-styles')) {
+    const style = document.createElement('style');
+    style.id = 'toast-styles';
+    style.textContent = `
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(100%); }
+            15% { opacity: 1; transform: translateX(0); }
+            85% { opacity: 1; transform: translateX(0); }
+            100% { opacity: 0; transform: translateX(100%); }
+        }
+    `;
+    document.head.appendChild(style);
 }
 
 // Toast notification function
